@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tech.wcserv.dao.BlogDAO">
+	
+	<resultMap id="blogVO" type="com.tech.wcserv.vo.BlogVO">
+        <result property="id" column="id"/>
+        <result property="seq" column="seq"/>
+        <result property="title" column="title"/>
+        <result property="link" column="link"/>
+        <result property="type" column="type"/>
+    </resultMap>
+	
+	<select id='selectByType' resultMap='blogVO'>
+		select * 
+		from blog
+		where type = #{blogType}
+		order by seq
+	</select>
+</mapper>

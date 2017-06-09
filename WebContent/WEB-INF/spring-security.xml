@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		 xmlns:sec="http://www.springframework.org/schema/security"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+	
+	<sec:http auto-config="true" use-expressions="true" disable-url-rewriting="true">
+		<sec:intercept-url pattern="/" access="permitAll" />
+        <sec:intercept-url pattern="/login*" access="permitAll" />
+        <sec:intercept-url pattern="/logout*" access="permitAll" />
+        <sec:intercept-url pattern="/blog*" access="permitAll" />
+        <sec:intercept-url pattern="/resources/**" access="permitAll" />
+        <sec:intercept-url pattern="/app/**" access="isAuthenticated()"/>
+        <sec:form-login
+        	login-page="/"
+        	login-processing-url="/processLogin"
+        	authentication-failure-handler-ref="authenticationFailureHandler"
+        	username-parameter="userName"
+        	password-parameter="password"
+        	authentication-success-handler-ref="authenticationSuccessHandler"
+         />
+        <sec:logout
+        	logout-url="/logout"
+        	delete-cookies="JSESSIONID" invalidate-session="false"
+        	success-handler-ref="logoutSuccessHandler"
+        	/>
+        <sec:csrf />
+    </sec:http>
+    
+   	<bean id="authenticationSuccessHandler" class="com.tech.wcserv.auth.AuthenticationSuccessHandlerImpl">
+		<property name="defaultTargetUrl" value="/app/home"/>
+	</bean>
+	
+	<bean id="authenticationFailureHandler" class="com.tech.wcserv.auth.AuthenticationFailureHandlerImpl">
+	    <property name="defaultFailureUrl" value="/login"/>
+	</bean>
+    
+    <bean id="logoutSuccessHandler" class="com.tech.wcserv.auth.LogoutSuccessHandlerImpl">
+		<property name="defaultTargetUrl" value="/"/>
+	</bean>
+	
+	<sec:authentication-manager>
+        <sec:authentication-provider ref="authenticationProvider" />
+    </sec:authentication-manager>
+	
+</beans>
